@@ -1,0 +1,120 @@
+﻿Концептуальна модель
+1) Абітурієнт (таблиця entrant)
+Основна таблиця данних абітурієнта, формується на основі атестату або диплому та заява.
+* Реестраційний номер (Primary key, PK, int)
+* ПІБ (FullName, text)
+* Дата народження (BDate, date)
+* Закінчений учбовий заклад (CEI, foreign key, reference to CompEducInst, many to one relationship)
+* Дата закінчення (FDate, date)
+* Тип диплому (DT, foreign key, reference to DType, many to one relationship)
+* Адреса (Addr, text)
+* Телефон (Phone, text)
+* Обрана спеціальність у конкретному ВУЗі (HeiSpecId, foreign key, reference to ChoosenSpec, many to one relationship)
+2) Учбовий заклад (таблиця CompEducInst)
+Таблиця данних про учбові заклади, дозволяє оптимізувати базу данних та пошук за учбовим закладом.
+* Індинтифікаційний номер (Primary key, PK, int)
+* Назва закладу (Name, text)
+3) ВУЗ (таблиця HEI - Higher education institution)
+Інформація щодо обраного ВУЗа, потрібно для структурування спеціальностей (список спеціальностей для кожного ВУЗу).
+* Індинтифікаційний номер (Primary key, PK, int)
+* Назва ВУЗу (Name, text)
+4) Спецiальність (таблиця Spec)
+Опис спеціальності та зазначених вступних іспитів.
+* Індинтифікаційний номер (Primary key, PK, int)
+* Назва спеціальності (Name, text)
+5) Вступний іспит (таблиця EntTest)
+Опис вступного іспиту.
+* Індинтифікаційний номер (Primary key, PK, int)
+* Назва іспиту (Name, text)
+
+Допоміжні таблиці: 
+* HeiSpec - зв’язок one to many з записом абітурієнта (Entrant)
+* SpecTest - зв’язок HeiSpec з EntTest (one to many)
+
+Таблиця зв’язків:
+---------------------------------------------
+| |Relationship name | |Table 1 | |Table 2 |
+---------------------------------------------
+| |One to many | |CompEducInst | |Entrant (CEI) |
+---------------------------------------------
+| |One to many	 | |HEI	 | |HeiSpec (HeiId) | |
+---------------------------------------------
+| |One to many | |Spec | |HeiSpec (SpecID) | |
+---------------------------------------------
+| |One to many | |EntTest | |SpecTest (TestID) |
+---------------------------------------------
+| |One to many | | |HeiSpec | |SpecTest |
+
+
+Код ER діаграми для сайту https://dbdiagram.io(https://dbdiagram.io)
+Table Entrant {
+  PK integer [primary key, note: 'Реестраційний номер']
+  FullName text [note: 'ПІБ']
+  BDate date [note: 'Дата народження']
+  CEI integer [note: 'Закінчений учбовий заклад']
+  FDate date [note: 'Дата закінчення']
+  DT integer [note: 'Тип диплому']
+  Addr text [note: 'Адреса']
+  Phone text [note: 'Телефон']
+  HeiSpecId integer [note: 'Обрана спеціальність у конкретному ВУЗі']
+}
+ 
+ 
+Table CompEducInst {
+  PK integer [primary key, note: 'Ідентифікаційний номер']
+  Name text [note: 'Назва закладу']
+}
+ 
+ 
+Table HEI {
+  PK integer [primary key, note: 'Ідентифікаційний номер']
+  Name text [note: 'Назва ВУЗу']
+}
+ 
+ 
+Table Spec {
+  PK integer [primary key, note: 'Ідентифікаційний номер']
+  Name text [note: 'Назва спеціальності']
+}
+ 
+ 
+Table EntTest {
+  PK integer [primary key, note: 'Ідентифікаційний номер']
+  Name text [note: 'Назва іспиту']
+}
+ 
+ 
+Table DType {
+  PK integer [primary key]
+  Name text [note: 'Тип диплому (атестат, диплом коледжу тощо)']
+}
+ 
+ 
+Table HeiSpec {
+  PK integer [primary key]
+  HeiId integer
+  SpecID integer
+}
+ 
+ 
+Table SpecTest {
+  PK integer [primary key]
+  HeiSpecId integer
+  TestID integer
+}
+ 
+ 
+ 
+Ref: CompEducInst.PK < Entrant.CEI       // One to many: CompEducInst -> Entrant
+Ref: DType.PK < Entrant.DT               // One to many: DType -> Entrant
+Ref: HEI.PK < HeiSpec.HeiId              // One to many: HEI -> HeiSpec
+Ref: Spec.PK < HeiSpec.SpecID            // One to many: Spec -> HeiSpec
+Ref: HeiSpec.PK < Entrant.HeiSpecId      // One to many: HeiSpec -> Entrant
+Ref: EntTest.PK < SpecTest.TestID        // One to many: EntTest -> SpecTest
+Ref: HeiSpec.PK < SpecTest.HeiSpecId     // One to many: HeiSpec -> SpecTest
+
+
+ER діаграма бази данних
+
+
+
