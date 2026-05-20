@@ -1,0 +1,54 @@
+--   Setting rule (name)   ext lin   Column name    link to: (table(COLUMN))
+--   CONSTRAINT fk_hs_hei FOREIGN KEY (HeiId) REFERENCES Hei(PK),
+
+
+CREATE TABLE CompEducInst (
+  PK INT PRIMARY KEY,
+  Name VARCHAR2(255) NOT NULL
+);
+
+CREATE TABLE Hei (
+  PK INT PRIMARY KEY,
+  Name VARCHAR2(255) NOT NULL
+);
+
+CREATE TABLE Spec (
+  PK INT PRIMARY KEY,
+  Name VARCHAR2(255) NOT NULL
+);
+
+CREATE TABLE EntTest (
+  PK INT PRIMARY KEY,
+  Name VARCHAR2(255) NOT NULL
+);
+
+CREATE TABLE HeiSpec (
+  PK INT PRIMARY KEY,
+  HeiId INT NOT NULL,
+  SpecId INT NOT NULL,
+  CONSTRAINT fk_hs_hei FOREIGN KEY (HeiId) REFERENCES Hei(PK),
+  CONSTRAINT fk_hs_spec FOREIGN KEY (SpecId) REFERENCES Spec(PK)
+);
+
+CREATE TABLE SpecTest (
+  PK INT PRIMARY KEY,
+  HeiSpecId INT NOT NULL,
+  TestId INT NOT NULL,
+  CONSTRAINT fk_st_heispec FOREIGN KEY (HeiSpecId) REFERENCES HeiSpec(PK),
+  CONSTRAINT fk_st_test FOREIGN KEY (TestId) REFERENCES EntTest(PK)
+);
+
+CREATE TABLE Entrant (
+  PK INT PRIMARY KEY,
+  FullName VARCHAR2(255) NOT NULL,
+  BDate DATE NOT NULL,
+  CEI INT NOT NULL,
+  FDate DATE NOT NULL,
+  DT VARCHAR2(20) NOT NULL,
+  Addr VARCHAR2(255) NOT NULL,
+  Phone VARCHAR2(255) NOT NULL,
+  HeiSpecId INT NOT NULL,
+  CONSTRAINT chk_entrant_dt CHECK (DT IN ('gold', 'silver', 'good')),
+  CONSTRAINT fk_entrant_cei FOREIGN KEY (CEI) REFERENCES CompEducInst(PK),
+  CONSTRAINT fk_entrant_heispec FOREIGN KEY (HeiSpecId) REFERENCES HeiSpec(PK)
+);
