@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "BFTWmsO9Rsw=",
+  "success": true,
+  "projectFilePath": "/home/user/kursach/EntrantCRM/EntrantCRM.csproj",
+  "expectedPackageFiles": [
+    "/home/user/.nuget/packages/microsoft.aspnetcore.app.ref/10.0.4/microsoft.aspnetcore.app.ref.10.0.4.nupkg.sha512"
+  ],
+  "logs": []
+}
