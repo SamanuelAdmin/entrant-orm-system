@@ -5,8 +5,24 @@ namespace EntrantCRM.Pages;
 
 public class IndexModel : PageModel
 {
+    private readonly ILogger<LoginModel> _logger;
+
+    public IndexModel(ILogger<LoginModel> logger)
+    {
+        _logger = logger;
+    }
+
     public void OnGet()
     {
+        var username = HttpContext.Session.GetString("login");
 
+        if (username != null) { 
+            var password = HttpContext.Session.GetString("password");
+            var link = HttpContext.Session.GetString("link");
+            
+            _logger.LogInformation(username);
+            _logger.LogInformation(password);
+            _logger.LogInformation(link);
+        }
     }
 }

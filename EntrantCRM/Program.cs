@@ -1,28 +1,30 @@
+using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
+
+
+Env.Load();
+
 var builder = WebApplication.CreateBuilder(args);
 
-// FROM https://metanit.com/sharp/aspnet6/13.2.php
-builder.Services.AddAuthorization();
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            // указывает, будет ли валидироваться издатель при валидации токена
-            ValidateIssuer = true,
-            // строка, представляющая издателя
-            ValidIssuer = AuthOptions.ISSUER,
-            // будет ли валидироваться потребитель токена
-            ValidateAudience = true,
-            // установка потребителя токена
-            ValidAudience = AuthOptions.AUDIENCE,
-            // будет ли валидироваться время существования
-            ValidateLifetime = true,
-            // установка ключа безопасности
-            IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
-            // валидация ключа безопасности
-            ValidateIssuerSigningKey = true,
-         };
+// ENV variables
+var IS_DEVELOPMENT = builder.Environment.IsDevelopment();
+var JWT_SECRET = Environment.GetEnvironmentVariable("JWT_SECRET");
+var DOMAIN = Environment.GetEnvironmentVariable("DOMAIN");
+
+
+// session configs
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(120); 
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
 });
+
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -42,6 +44,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseAuthorization();
+app.UseSession();
 
 app.MapStaticAssets();
 app.MapRazorPages()
