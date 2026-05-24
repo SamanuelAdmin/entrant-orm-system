@@ -95,3 +95,4 @@
 /home/user/kursach/EntrantCRM/obj/Debug/net10.0/EntrantCRM.pdb
 /home/user/kursach/EntrantCRM/obj/Debug/net10.0/EntrantCRM.genruntimeconfig.cache
 /home/user/kursach/EntrantCRM/obj/Debug/net10.0/ref/EntrantCRM.dll
+/home/user/kursach/EntrantCRM/obj/Debug/net10.0/EntrantCRM.sourcelink.json

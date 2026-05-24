@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EntrantCRM")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b37cd0e452dc36787a573c30943f915033dbb97c")]
 [assembly: System.Reflection.AssemblyProductAttribute("EntrantCRM")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EntrantCRM")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
