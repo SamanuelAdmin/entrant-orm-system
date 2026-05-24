@@ -1,0 +1,44 @@
+## Core dotnet artifacts
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+*.suo
+
+## Visual Studio files
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+
+## Rider & JetBrains
+.idea/
+*.sln.DotSettings.user
+
+## VS Code
+.vscode/
+!.vscode/extensions.json
+
+## User-specific / Secrets
+appsettings.Development.json
+appsettings.Local.json
+*.secrets.json
+.microsoft.dotnet.secret_manager.string.txt
+
+## Test result artifacts
+TestResults/
+*.trx
+*.coverage
+
+## NuGet Packages
+*.nupkg
+# Обеспечивает изоляцию локальных пакетов
+packages/
+!packages/repositories.config
+project.lock.json
+project.fragment.lock.json
+
+## OS generated files
+.DS_Store
+Thumbs.db
