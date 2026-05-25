@@ -26,36 +26,30 @@ public class LoginModel : PageModel
 
         // TODO: Check the creds before adding
         Oracle.ManagedDataAccess.Client.OracleConnectionStringBuilder ria = new Oracle.ManagedDataAccess.Client.OracleConnectionStringBuilder(); // Створюємо підключення
-        var builder = new Oracle.ManagedDataAccess.Client.OracleConnectionStringBuilder();
-        
+
         string serviceName = link.Replace("/", "").Replace("\\", "").Trim();
-        string tnsConnectionString = $"(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=127.0.0.1)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=)))";
-        
-        builder.UserID = login;
-        builder.Password = password;
-        builder.DataSource = tnsConnectionString; 
-        builder.PersistSecurityInfo = true;
-        builder.Pooling = false;       // Отключаем пул, чтобы соединение создавалось честно
-        builder.ConnectionTimeout = 5;
-        
-        if (builder.UserID.ToLower() == "sys")
+        string tnsConnectionString = $"(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=127.0.0.1)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=ORA)))";
+        string finalConnectionString = $"User Id=Scott;Password=tiger1;Data Source={tnsConnectionString};";
+
+
+        ria.UserID = login;  // Присвоюємо введенний ID користувача з textBox1
+        if (login.ToLower() == "sys")
         {
-            builder.DBAPrivilege = "SYSDBA";
+            finalConnectionString += "DBA Privilege=SYSDBA;";
         }
 
-        string completedConnString = builder.ConnectionString;
-        _logger.LogInformation(completedConnString);
+        ria.Password = password;   // Присвоюємо введенний пароль з textBox2
+        ria.PersistSecurityInfo = true;  // Дозволяємо зберігати інформацію про безпеку
 
-        using (var con = new Oracle.ManagedDataAccess.Client.OracleConnection("USER ID=sys;PASSWORD=sys;DATA SOURCE=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=127.0.0.1)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=xe)))"))
-        {
-          //try  // Спроба під'єднання
-          //{
-              con.Open();  // Відкриваємо з'єднання з базою даних
-              return RedirectToPage("/Index");
-          //} catch {
-          //  _logger.LogError("Cannot connect to database!");
-          //  return new BadRequestResult();
-          //}
-        }
+        Oracle.ManagedDataAccess.Client.OracleConnection con = new Oracle.ManagedDataAccess.Client.OracleConnection(finalConnectionString);
+        con.ConnectionString = ria.ConnectionString; // Встановлюємо рядок підключення
+        //try  // Спроба під'єднання
+        //{
+            con.Open();  // Відкриваємо з'єднання з базою даних
+            return RedirectToPage("/Index");
+        //} catch {
+        //  _logger.LogError("Cannot connect to database!");
+        //  return new BadRequestResult();
+        //}
     }
 }
