@@ -24,13 +24,10 @@ public class LoginModel : PageModel
         HttpContext.Session.SetString("password", password);
         HttpContext.Session.SetString("link", link);
 
-        Oracle.ManagedDataAccess.Client.OracleConnectionStringBuilder ria = new Oracle.ManagedDataAccess.Client.OracleConnectionStringBuilder(); // Створюємо підключення
 
-        string serviceName = link.Replace("/", "").Replace("\\", "").Trim();
         string tnsConnectionString = $"(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=serveroracle)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME={link})))";
-        // string finalConnectionString = $"User Id=Scott;Password=tiger1;Data Source={tnsConnectionString};";
 
-
+        Oracle.ManagedDataAccess.Client.OracleConnectionStringBuilder ria = new Oracle.ManagedDataAccess.Client.OracleConnectionStringBuilder();
         ria.UserID = login; 
         ria.Password = password;  
         ria.DataSource = tnsConnectionString;

@@ -28,10 +28,10 @@ public class ReportsModel : PageModel
     public IActionResult OnGet(string report_name)
     {
         var username = HttpContext.Session.GetString("login");
-//        if (username == null) { 
-//            return RedirectToPage("/Login");
-//        }
-//
+        if (username == null) { 
+            return RedirectToPage("/Login");
+        }
+
         if (report_name != null) {
           return File($"/Reports/{Path.GetFileName(report_name)}", "text/html");
         }
