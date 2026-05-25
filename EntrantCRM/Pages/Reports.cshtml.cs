@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace EntrantCRM.Pages;
 
-public class IndexModel : PageModel
+public class ReportsModel : PageModel
 {
-    private readonly ILogger<IndexModel> _logger;
+    private readonly ILogger<ReportsModel> _logger;
 
-    public IndexModel(ILogger<IndexModel> logger)
+    public ReportsModel(ILogger<ReportsModel> logger)
     {
         _logger = logger;
     }
@@ -19,10 +19,7 @@ public class IndexModel : PageModel
             return RedirectToPage("/Login");
         }
 
-        var password = HttpContext.Session.GetString("password");
-        var link = HttpContext.Session.GetString("link");
         
-        _logger.LogInformation(username, password, link);
 
         return Page();
         
