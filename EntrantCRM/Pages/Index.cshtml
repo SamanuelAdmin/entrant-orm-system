@@ -1,7 +1,7 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = @Model.PageTitle;
+    ViewData["Title"] = @Model.title;
 }
 
 <div class="text-center">
@@ -21,6 +21,7 @@
                 {
                     <th>@column.ColumnName</th>
                 }
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -32,12 +33,36 @@
                         @foreach (System.Data.DataColumn column in Model.table.Columns)
                         {
                             <td>@row[column]</td>
+                            <td>
+                                <form method="post">
+                                    <input name="action" value="remove">
+                                    <input name="viewname" value="@Model.viewname">
+                                    <input name="rowname" value="@row["name"]">
+                                    <button type="submit">Remove</button>
+                                </form>
+                            </td>
                         }
                     </tr>
-                    
                     i += 1;
                 }
+                
             }
+
+
+            <tr>
+                <th></th>
+                <form method="post">
+                    @foreach (System.Data.DataColumn column in Model.Columns)
+                    {
+                        <th>
+                            <input name="@column.ColumnName" type=text>
+                        </th>
+                    }
+                    <th>
+                        <button type="submit">Add new</button>
+                    </th>
+                </form>
+            </td>
         </tbody>
     </table>
 </div>
