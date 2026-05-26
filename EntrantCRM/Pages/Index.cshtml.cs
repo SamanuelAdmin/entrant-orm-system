@@ -12,8 +12,11 @@ public class IndexModel : PageModel
         _logger = logger;
     }
 
+    public DataTable table;
+    public string title;
 
-    public Oracle.ManagedDataAccess.Client.OracleConnection GetConnection(string login, string password, string link) {
+
+    public string GetConnectionString(string login, string password, string link) {
         string tnsConnectionString = $"(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=serveroracle)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME={link})))";
 
         Oracle.ManagedDataAccess.Client.OracleConnectionStringBuilder ria = new Oracle.ManagedDataAccess.Client.OracleConnectionStringBuilder();
@@ -21,16 +24,36 @@ public class IndexModel : PageModel
         ria.Password = password;  
         ria.DataSource = tnsConnectionString;
         ria.PersistSecurityInfo = true;
+ 
+        return ria.ConnectionString;
+    }
 
-        Oracle.ManagedDataAccess.Client.OracleConnection con = new Oracle.ManagedDataAccess.Client.OracleConnection();
-        con.ConnectionString = ria.ConnectionString;
-        
-        con.Open(); 
-        return con;
+    public DataTable GetViewData(string connectionString, string viewName)
+    {
+        string query = $"SELECT * FROM {viewName}"; 
+
+//        Oracle.ManagedDataAccess.Client.OracleConnection con = new Oracle.ManagedDataAccess.Client.OracleConnection();
+//        con.ConnectionString = ria.ConnectionString;
+//        con.Open(); 
+
+        using (OracleConnection conn = new OracleConnection(connectionString))
+        {
+            using (OracleCommand cmd = new OracleCommand(query, conn))
+            {
+                using (OracleDataAdapter adapter = new OracleDataAdapter(cmd))
+                {
+                    DataTable dataTable = new DataTable();
+                    conn.Open();
+                    adapter.Fill(dataTable); 
+                    
+                    return dataTable;
+                }
+            }
+        }
     }
 
 
-    public IActionResult OnGet()
+    public IActionResult OnGet(string viewname, string title)
     {
         var login = HttpContext.Session.GetString("login");
         if (login == null) { 
@@ -40,32 +63,24 @@ public class IndexModel : PageModel
         var password = HttpContext.Session.GetString("password");
         var link = HttpContext.Session.GetString("link");
         
+        string connectionString = GetConnectionString(login, password, link)
+
+        if (viewname== null) {
+            viewname = "entrant_view" // default view
+        }
+        if (title == null) {
+            this.title = viewname.Replace("_view", "");
+        } else {
+            this.title = title;
+        }
+        
         try 
         {
-            Oracle.ManagedDataAccess.Client.OracleConnection con = GetConnection(login, password, link)
-            con.Open(); 
+            this.table = GetViewData(connectionString, viewname);
         } catch {
-          _logger.LogError("Cannot connect to database!");
-          return RedirectToPage("/Login");
+          _logger.LogError("Database error");
+          return new BadRequestResult();
         }
-        
-
-        string sql = "SELECT * FROM comp_educ_inst_view "; 
-
-        using (var cmd = new OracleCommand(sql, con))
-        {
-            con.Open();
-            using (var reader = cmd.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    names.Add(reader.GetString(0));
-                }
-            }
-        }
-        
-        con.Close(); 
-
 
         return Page();
         

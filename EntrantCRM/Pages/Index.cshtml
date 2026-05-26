@@ -1,10 +1,43 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = @Model.PageTitle;
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+
+<div class="text-center align-items-center" style="display: flex; flex-direction: column;">
+    <h1 class="display-5">Reports</h1>
+
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Number</th>
+                @foreach (System.Data.DataColumn column in Model.Columns)
+                {
+                    <th>@column.ColumnName</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @{ 
+                var i = 1;
+                @foreach (System.Data.DataRow row in Model.table.Rows)
+                {
+                    <tr>
+                        @foreach (System.Data.DataColumn column in Model.table.Columns)
+                        {
+                            <td>@row[column]</td>
+                        }
+                    </tr>
+                    
+                    i += 1;
+                }
+            }
+        </tbody>
+    </table>
 </div>
