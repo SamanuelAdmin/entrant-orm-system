@@ -4,20 +4,16 @@
     ViewData["Title"] = @Model.title;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
 
 
 <div class="text-center align-items-center" style="display: flex; flex-direction: column;">
-    <h1 class="display-5">Reports</h1>
+    <h1 class="display-5">@Model.title</h1>
 
     <table class="styled-table">
         <thead>
             <tr>
-                <th>Number</th>
-                @foreach (System.Data.DataColumn column in Model.Columns)
+                <th class="text-center">Number</th>
+                @foreach (System.Data.DataColumn column in Model.table.Columns)
                 {
                     <th>@column.ColumnName</th>
                 }
@@ -27,21 +23,23 @@
         <tbody>
             @{ 
                 var i = 1;
+
                 @foreach (System.Data.DataRow row in Model.table.Rows)
                 {
                     <tr>
+                        <td>@i</td>
                         @foreach (System.Data.DataColumn column in Model.table.Columns)
                         {
                             <td>@row[column]</td>
-                            <td>
-                                <form method="post">
-                                    <input name="action" value="remove">
-                                    <input name="viewname" value="@Model.viewname">
-                                    <input name="rowname" value="@row["name"]">
-                                    <button type="submit">Remove</button>
-                                </form>
-                            </td>
                         }
+
+                        <td>
+                            <form method="post" asp-page-handler="Delete">
+                                <input type="hidden" name="viewname" value="@Model.viewname">
+                                <input type="hidden" name="rowid" value="@row["PK"]">
+                                <button type="submit">Remove</button>
+                            </form>
+                        </td>
                     </tr>
                     i += 1;
                 }
@@ -52,17 +50,22 @@
             <tr>
                 <th></th>
                 <form method="post">
-                    @foreach (System.Data.DataColumn column in Model.Columns)
+                    <input type="hidden" name="viewname" value="@Model.viewname">
+                    @foreach (System.Data.DataColumn column in Model.table.Columns)
                     {
                         <th>
-                            <input name="@column.ColumnName" type=text>
+                            @if (column.ColumnName != "PK") {
+                                    <input name="@column.ColumnName" type=text>
+                            }
                         </th>
                     }
                     <th>
-                        <button type="submit">Add new</button>
+                        <button type="submit">+</button>
                     </th>
                 </form>
             </td>
         </tbody>
     </table>
+
+    <a asp-page="/Index" asp-page-handler="Report" asp-route-viewname="@Model.viewname">Generate report</a>
 </div>
